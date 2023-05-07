@@ -1,0 +1,67 @@
+a {
+    text-decoration: none;
+    list-style: none;
+}
+
+.navItem {
+    color: #1a1a1a;
+}
+
+.contenedorImagen {
+    object-fit: cover;
+    padding: 5px;
+}
+
+.imagenProducto {
+    width: 80%;
+}
+
+.cardCustom {
+    width: 30%;
+}
+
+.iconoRedes {
+    width: 35px;
+    margin: 15px 10px;
+}
+
+
+
+.hover:hover {
+    color: #1a1a1a;
+    background-color: rgb(228, 228, 228);
+}
+
+
+
+.textBold {
+    color: blue !important;
+}
+
+.bg-gray {
+    background-color: #1a1a1a;
+    color: white;
+}
+
+.width-90 {
+    width: 90%;
+}
+
+.width-40 {
+    width: 40%;
+}
+
+.width-30 {
+    width: 30%;
+}
+
+.width-70 {
+    width: 70%;
+}
+
+
+
+.tituloPpal {
+    font-size: 3rem;
+    color: blue;
+}
