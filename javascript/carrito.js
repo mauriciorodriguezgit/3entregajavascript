@@ -3,7 +3,7 @@ class Producto {
         this.id = id;
         this.modelo = modelo;
         this.img = img;
-        this.alt = alt
+        this.alt = alt;
         this.precio = precio;
         this.cantidad = 1;
         this.stock = stock;
@@ -12,70 +12,69 @@ class Producto {
 
 class ControladorDeProductos {
     constructor() {
-        this.listaDeProductos = []
-        this.contenedorProductos = document.getElementById("contenedorProductos")
+        this.listaDeProductos = [];
+        this.contenedorProductos = document.getElementById("contenedorProductos");
     }
 
     uploadDeProductos() {
         this.listaDeProductos = [
-            new Producto(1, "brocoli", "./img/productos/brocoli.jpg","", 60,25),
-            new Producto(2, "cebolla", "./img/productos/cebolla.jpg","", 70,12),
-            new Producto(3, "coliflor", "./img/productos/coliflor.jpg","", 26,8),
-            new Producto(4, "lechuga", "./img/productos/lechuga.jpg","", 75,3),
-            new Producto(5, "papa", "./img/productos/papa.jpg","", 27,20),
-            new Producto(6, "tomate", "./img/productos/tomate.jpg","", 31,17),
-            new Producto(7, "zanahoria", "./img/productos/zanahoria.jpg","",25,24),
-
-        ]
+            new Producto(1, "brocoli", "./img/productos/brocoli.jpg", "", 60, 25),
+            new Producto(2, "cebolla", "./img/productos/cebolla.jpg", "", 70, 12),
+            new Producto(3, "coliflor", "./img/productos/coliflor.jpg", "", 26, 8),
+            new Producto(4, "lechuga", "./img/productos/lechuga.jpg", "", 75, 3),
+            new Producto(5, "papa", "./img/productos/papa.jpg", "", 27, 20),
+            new Producto(6, "tomate", "./img/productos/tomate.jpg", "", 31, 17),
+            new Producto(7, "zanahoria", "./img/productos/zanahoria.jpg", "", 25, 24),
+        ];
     }
 
     displayProductosDOM() {
-        this.listaDeProductos.forEach(producto => {
-            this.contenedorProductos.innerHTML +=
-                `<div class="d-flex card cardCustom mb-3">
-                <h3 class="card-header text-center">${producto.modelo}</h3>
-                <div class="d-flex contenerImagen mt-2">
-                    <img class="m-auto imagenProducto" src="${producto.img}" alt="${producto.alt}">
-                </div>
-                
-                
-                <div class="card-body text-center pt-1">
-                    <p class="card-text">Precio: $${producto.precio}</p>
-                </div>
-                <div class="d-flex m-auto my-3">
-                    <button type="button" id="${producto.id}" class="btn btn-primary hover">Añadir al Carrito</button>
-                </div>
-            </div>`
-        })
+        this.listaDeProductos.forEach((producto) => {
+            this.contenedorProductos.innerHTML += `<div class="d-flex card cardCustom mb-3">
+                  <h3 class="card-header text-center">${producto.modelo}</h3>
+                  <div class="d-flex contenerImagen mt-2">
+                      <img class="m-auto imagenProducto" src="${producto.img}" alt="${producto.alt}">
+                  </div>
+                  
+                  
+                  <div class="card-body text-center pt-1">
+                      <p class="card-text">Precio: $${producto.precio}</p>
+                  </div>
+                  <div class="d-flex m-auto my-3">
+                      <button type="button" id="${producto.id}" class="btn btn-primary hover">Añadir al Carrito</button>
+                  </div>
+              </div>`;
+        });
     }
 
     clickAnadir(controladorCarrito) {
-        this.listaDeProductos.forEach(producto => {
-            const btnAP = document.getElementById(`${producto.id}`)
+        this.listaDeProductos.forEach((producto) => {
+            const btnAP = document.getElementById(`${producto.id}`);
             btnAP.addEventListener("click", () => {
-
-                controladorCarrito.pushear(producto) //verificar si existe antes el producto
-                controladorCarrito.setStorage()
-                controladorCarrito.displayCarritoDOM(contenedorCarrito) //solo añadir un producto al DOM
+                controladorCarrito.pushear(producto); //verificar si existe antes el producto
+                controladorCarrito.setStorage();
+                controladorCarrito.displayCarritoDOM(); //solo añadir un producto al DOM
 
                 Toastify({
                     text: `${producto.modelo} Añadido!`,
-                    duration: 1200
+                    duration: 1200,
                 }).showToast();
-            })
-        })
+                controladorCarrito.displayCarritoDOM(); // Actualizar la cantidad en el DOM
+            });
+        });
     }
 }
 
 class ControladorDelCarrito {
     constructor() {
-        this.listaDelCarrito = []
-        this.contenedorCarrito = document.getElementById("contenedorCarrito")
-        this.totalCompra = document.getElementById("totalCompra")
+        this.listaDelCarrito = [];
+        this.contenedorCarrito = document.getElementById("contenedorCarrito");
+        this.totalCompra = document.getElementById("totalCompra");
+        this.cantidadCarrito = document.getElementById("cantidadCarrito");
     }
 
     pushear(producto) {
-        const index = this.listaDelCarrito.findIndex(item => item.id === producto.id);
+        const index = this.listaDelCarrito.findIndex((item) => item.id === producto.id);
         if (index !== -1) {
             this.listaDelCarrito[index].cantidad++;
         } else {
@@ -84,80 +83,111 @@ class ControladorDelCarrito {
     }
 
     setStorage() {
-        let listaDelCarritoJSON = JSON.stringify(this.listaDelCarrito)
-        localStorage.setItem("listaDelCarrito", listaDelCarritoJSON)
+        let listaDelCarritoJSON = JSON.stringify(this.listaDelCarrito);
+        localStorage.setItem("listaDelCarrito", listaDelCarritoJSON);
     }
 
     checkStorage() {
-        this.listaDelCarrito = JSON.parse(localStorage.getItem("listaDelCarrito")) || []
-        this.listaDelCarrito.length > 0 && this.displayCarritoDOM()
+        this.listaDelCarrito = JSON.parse(localStorage.getItem("listaDelCarrito")) || [];
+        this.listaDelCarrito.length > 0 && this.displayCarritoDOM();
     }
 
     resetStorage() {
-        localStorage.removeItem("listaDelCarrito")
+        localStorage.removeItem("listaDelCarrito");
     }
 
     displayCarritoDOM() {
-        this.resetDOM(contenedorCarrito)
-        this.listaDelCarrito.forEach(producto => {
-            this.contenedorCarrito.innerHTML +=
-                `<div class="card mb-3" style="max-width: 540px;">
-                <div class="row g-0">
-                    <div class="col-md-4">
-                        <img src="${producto.img}" class="img-fluid rounded-start" alt="${producto.alt}">
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="card-title">${producto.modelo}</h5>                           
-                            <p class="card-text">Precio: $${producto.precio}</p>
-                            <p class="card-text">Cantidad: ${producto.cantidad}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>`
-        })
+        this.resetDOM();
+        this.listaDelCarrito.forEach((producto) => {
+            this.contenedorCarrito.innerHTML += `<div class="card mb-3" style="max-width: 540px;">
+                  <div class="row g-0">
+                      <div class="col-md-4">
+                          <img src="${producto.img}" class="img-fluid rounded-start" alt="${producto.alt}">
+                      </div>
+                      <div class="col-md-8">
+                          <div class="card-body">
+                              <h5 class="card-title">${producto.modelo}</h5>                           
+                              <p class="card-text">Precio: $${producto.precio}</p>
+                              <p class="card-text">Cantidad: ${producto.cantidad}</p>
+                              <button type="button" id="eliminar-${producto.id}" class="btn btn-danger">Eliminar</button>
+                          </div>
+                      </div>
+                  </div>
+              </div>`;
+        });
 
-        this.displayTotalDOM()
+        this.displayTotalDOM();
+        this.addEliminarEventListeners();
+        // Actualizar la cantidad de productos en el elemento del logo del carrito
+        this.cantidadCarrito.textContent = this.listaDelCarrito.length.toString();
     }
 
     resetDOM() {
-        this.contenedorCarrito.innerHTML = ""
+        this.contenedorCarrito.innerHTML = "";
     }
 
     resetListaDelCarrito() {
-        this.listaDelCarrito = []
+        this.listaDelCarrito = [];
     }
 
     finalizarCompra() {
         finalizarCompra.addEventListener("click", () => {
             if (this.listaDelCarrito.length != 0) {
                 Swal.fire({
-                    position: 'center',
-                    icon: 'success',
-                    title: 'Compra exitosa!',
+                    position: "center",
+                    icon: "success",
+                    title: "Compra exitosa!",
                     showConfirmButton: false,
-                    timer: 1700
-                })
+                    timer: 1700,
+                });
 
-                controladorCarrito.resetDOM()
-                controladorCarrito.resetStorage()
-                controladorCarrito.resetListaDelCarrito()
-                controladorCarrito.displayTotalDOM()
+                this.resetDOM();
+                this.resetStorage();
+                this.resetListaDelCarrito();
+                this.displayTotalDOM();
             }
-        })
+        });
     }
 
     calcularTotal() {
-        let totalCompra = 0
-        this.listaDelCarrito.forEach(producto => {
-            totalCompra += producto.precio * producto.cantidad
-        })
+        let totalCompra = 0;
+        this.listaDelCarrito.forEach((producto) => {
+            totalCompra += producto.precio * producto.cantidad;
+        });
 
         return totalCompra;
     }
 
     displayTotalDOM() {
-        this.totalCompra.innerHTML = "$" + this.calcularTotal()
+        const totalCompra = this.calcularTotal();
+        this.totalCompra.innerHTML = "$" + totalCompra;
+
+        const cantidadCarrito = document.getElementById("cantidadCarrito");
+        cantidadCarrito.textContent = totalCompra;
+    }
+
+    eliminarProducto(id) {
+        const index = this.listaDelCarrito.findIndex((item) => item.id === id);
+        if (index !== -1 && this.listaDelCarrito[index].cantidad > 1) {
+            this.listaDelCarrito[index].cantidad--;
+        } else if (index !== -1) {
+            this.listaDelCarrito.splice(index, 1);
+        }
+    }
+
+    addEliminarEventListeners() {
+        this.listaDelCarrito.forEach((producto) => {
+            const btnEliminar = document.getElementById(`eliminar-${producto.id}`);
+            btnEliminar.addEventListener("click", () => {
+                this.eliminarProducto(producto.id);
+                this.setStorage();
+                this.displayCarritoDOM();
+                Toastify({
+                    text: `${producto.modelo} eliminado del carrito.`,
+                    duration: 1200,
+                }).showToast();
+            });
+        });
     }
 }
 
@@ -173,3 +203,4 @@ controladorProductos.displayProductosDOM();
 
 // Eventos
 controladorProductos.clickAnadir(controladorCarrito);
+
